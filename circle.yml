@@ -23,4 +23,4 @@ test:
     - curl https://calypso.live/?branch=$BRANCHNAME
     - until $(curl https://calypso.live/?list_branches 2>/dev/null | jq ".ready | contains( [\"$BRANCHNAME\"] )"); do sleep 5; done
   override:
-    - cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master} && ./run.sh -R -C -b $BRANCHNAME $RUN_ARGS
+    - cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master} && ./run.sh -R -g -b $BRANCHNAME $RUN_ARGS
