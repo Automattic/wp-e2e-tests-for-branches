@@ -29,4 +29,4 @@ test:
 
 notify:
   webhooks:
-    - url: https://a8cghcirclebridge.herokuapp.com/circleciwebhook
+    - url: https://a8c-gh-e2e-bridge.go-vip.co/circleciwebhook
