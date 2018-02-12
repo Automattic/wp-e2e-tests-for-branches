@@ -18,7 +18,7 @@ dependencies:
   override:
     - cd wp-e2e-tests && npm install
     - if [ "$LIVEBRANCHES" = true ]; then curl https://calypso.live/?branch=$BRANCHNAME; fi
-    - if [ "$LIVEBRANCHES" = true ]; then until $(curl https://calypso.live/?list_branches 2>/dev/null | jq ".ready | contains( [\"$BRANCHNAME\"] )"); do sleep 5; done; fi
+    - if [ "$LIVEBRANCHES" = true ]; then until $(curl https://calypso.live/status?branch=$BRANCHNAME 2>/dev/null | grep -w "Ready" 1>2 2>/dev/null ); do sleep 5; done; fi
 
 test:
   pre:
