@@ -17,7 +17,7 @@ dependencies:
     - "wp-e2e-tests/node_modules"
   override:
     - cd wp-e2e-tests && npm install
-    - if [ "$LIVEBRANCHES" = true ]; then until $(curl https://calypso.live/status?branch=$BRANCHNAME 2>/dev/null | grep -wqe "Ready\|NeedsPriming" ); do sleep 5; done; fi
+    - if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
 
 test:
   pre:
