@@ -6,4 +6,5 @@ If you need to make changes to these e2e tests you will need to merge these into
 
 # Current Build Status
 
-[![CircleCI](https://circleci.com/gh/Automattic/wp-e2e-tests-canary/tree/master.svg?style=svg)](https://circleci.com/gh/Automattic/wp-e2e-tests-canary/tree/master)
+[![CircleCI](https://circleci.com/gh/Automattic/wp-e2e-tests-for-branches/tree/master.svg?style=svg)](https://circleci.com/gh/Automattic/wp-e2e-tests-for-branches/tree/master)
+
