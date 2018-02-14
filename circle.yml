@@ -1,6 +1,8 @@
 machine:
   node:
     version: 8.9.3
+  environment:
+    NODE_ENV: test
 
 general:
   artifacts:
@@ -24,7 +26,7 @@ test:
 
   override:
     - echo running test command "./run.sh -R -C $RUN_ARGS"
-    - cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master} && ./run.sh -R -C $RUN_ARGS
+    - cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master} && npm run decryptconfig && ./run.sh -R -C $RUN_ARGS
 
 notify:
   webhooks:
