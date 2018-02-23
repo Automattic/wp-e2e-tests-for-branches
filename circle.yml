@@ -26,7 +26,7 @@ test:
 
   override:
     - echo running test command "./run.sh -R ${testFlag--C} $RUN_ARGS"
-    - cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master} && npm run decryptconfig && ./run.sh -R ${testFlag--C} $RUN_ARGS
+    - cd wp-e2e-tests && git checkout origin/try/fix-payment-button && npm run decryptconfig && ./run.sh -R -g $RUN_ARGS
 
 notify:
   webhooks:
