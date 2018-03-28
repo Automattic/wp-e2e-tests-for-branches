@@ -3,6 +3,7 @@ machine:
     version: 8.9.3
   environment:
     NODE_ENV: test
+    TARGET: BRANCHES
 
 general:
   artifacts:
