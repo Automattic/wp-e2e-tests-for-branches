@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/wp-e2e-tests
+    docker:
+      - image: 'circleci/node:8.11.0-browsers'
+        environment:
+          NODE_ENV: test
+          TARGET: BRANCHES
+    steps:
+      - checkout
+      - run: git submodule init
+      - run: git submodule update --remote --force
+      - run: cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master}
+      - run: cd wp-e2e-tests && npm install
+      - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
+      - run: echo running test command "./run.sh -R ${testFlag--C} $RUN_ARGS"
+      - run: cd wp-e2e-tests && npm run decryptconfig && ./run.sh -R ${testFlag--C} $RUN_ARGS
+      - store_test_results:
+          path: wp-e2e-tests/reports/
+      - store_artifacts:
+          path: wp-e2e-tests/reports/
+      - store_artifacts:
+          path: wp-e2e-tests/screenshots/
+notify:
+  webhooks:
+    - url: https://a8c-gh-e2e-bridge.go-vip.co/circleciwebhook
