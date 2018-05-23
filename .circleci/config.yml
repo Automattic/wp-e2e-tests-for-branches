@@ -14,8 +14,9 @@ jobs:
       - run: cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master}
       - run: cd wp-e2e-tests && npm install
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
+      - run: cd wp-e2e-tests && npm run decryptconfig
       - run: echo running test command "./run.sh -R ${testFlag--C} $RUN_ARGS"
-      - run: cd wp-e2e-tests && npm run decryptconfig && ./run.sh -R ${testFlag--C} $RUN_ARGS
+      - run: cd wp-e2e-tests && ./run.sh -R ${testFlag--C} $RUN_ARGS
       - store_test_results:
           path: wp-e2e-tests/reports/
       - store_artifacts:
