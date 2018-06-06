@@ -21,6 +21,7 @@ jobs:
             - "wp-e2e-tests/node_modules"
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
       - run: cd wp-e2e-tests && npm run decryptconfig
+      - run: sudo chmod +x wp-e2e-tests/node_modules/.bin/magellan
       - run: echo running test command "./run.sh -R ${testFlag--C} $RUN_ARGS"
       - run: cd wp-e2e-tests && ./run.sh -R ${testFlag--C} $RUN_ARGS
       - store_test_results:
