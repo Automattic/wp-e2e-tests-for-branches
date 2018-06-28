@@ -13,12 +13,14 @@ jobs:
       - run: git submodule update --remote --force
       - run: cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master}
       - restore_cache:
-          key: v1-{{ checksum "wp-e2e-tests/package-lock.json" }}
-      - run: cd wp-e2e-tests && npm install
+          keys: 
+            - v1-npmcache-{{ checksum "wp-e2e-tests/package-lock.json" }}
+            - v1-npmcache
+      - run: cd wp-e2e-tests && npm ci
       - save_cache:
-          key: v1-{{ checksum "wp-e2e-tests/package-lock.json" }}
+          key: v1-npmcache-{{ checksum "wp-e2e-tests/package-lock.json" }}
           paths:
-            - "wp-e2e-tests/node_modules"
+            - "~/.npm"
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
       - run: cd wp-e2e-tests && npm run decryptconfig
       - run: sudo chmod +x wp-e2e-tests/node_modules/.bin/magellan
