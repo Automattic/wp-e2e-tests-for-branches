@@ -43,7 +43,7 @@ done
 
 SITE=$(curl https://calypso.live/?branch=$BRANCHNAME 2>/dev/null)
 COUNT=0
-until ! $(echo $SITE | grep -q "dserve" ); do
+until ! $(echo $SITE | grep -q "DServe Calypso" ); do
   if [ $COUNT == $SITEWAITCOUNT ]; then
     echo "Reached maximum allowed wait time, quitting"
     exit 1
