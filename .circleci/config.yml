@@ -23,11 +23,6 @@ jobs:
           key: v1-npmcache-{{ checksum "wp-e2e-tests/.nvmrc" }}-{{ checksum "wp-e2e-tests/package-lock.json" }}
           paths:
             - "~/.npm"
-      - run: sudo apt install ffmpeg
-      - run:
-          name: Setup Environment Variables
-          command: |
-            echo 'export TEST_VIDEO="true"' >> $BASH_ENV
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
       - run: cd wp-e2e-tests && npm run decryptconfig
       - run: sudo chmod +x wp-e2e-tests/node_modules/.bin/magellan
