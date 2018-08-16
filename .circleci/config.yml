@@ -28,7 +28,7 @@ jobs:
       - run: cd wp-e2e-tests && npm run decryptconfig
       - run: sudo chmod +x wp-e2e-tests/node_modules/.bin/magellan
       - run: echo running test command "./run.sh -p -R ${testFlag} $RUN_ARGS"
-      - run: cd wp-e2e-tests && ./run.sh -p -R ${testFlag} $RUN_ARGS
+      - run: cd wp-e2e-tests && ./run.sh -R ${testFlag} $RUN_ARGS
       - store_test_results:
           path: wp-e2e-tests/reports/
       - store_artifacts:
