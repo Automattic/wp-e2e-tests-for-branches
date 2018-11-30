@@ -35,6 +35,11 @@ jobs:
           path: wp-e2e-tests/reports/
       - store_artifacts:
           path: wp-e2e-tests/screenshots/
-notify:
-  webhooks:
-    - url: https://a8c-gh-e2e-bridge.go-vip.co/circleciwebhook
+      - run:
+          name: Notify webhook of failed build
+          when: on_fail
+          command: ./wp-e2e-tests/scripts/notify-webhook.sh failed
+      - run:
+          name: Notify webhook of successful build
+          when: on_success
+          command: ./wp-e2e-tests/scripts/notify-webhook.sh success
