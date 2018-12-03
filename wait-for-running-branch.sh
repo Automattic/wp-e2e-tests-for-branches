@@ -5,6 +5,12 @@ if [ "" == "$sha" ]; then
   exit;
 fi
 
+if [ "$sha" != "$calypsoSha" ]; then
+    echo "Using calypsoSha envvar"
+    sha=$calypsoSha
+    exit;
+fi
+
 COUNT=0
 RESETCOUNT=60 # 5sec retry = Reset the branch after 5 minutes
 MAXCOUNT=120  # 5sec retry = Cancel after 10 minutes
