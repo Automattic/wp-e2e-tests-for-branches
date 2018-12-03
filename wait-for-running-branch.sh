@@ -8,7 +8,6 @@ fi
 if [ "$sha" != "$calypsoSha" ]; then
     echo "Using calypsoSha envvar"
     sha=$calypsoSha
-    exit;
 fi
 
 COUNT=0
