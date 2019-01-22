@@ -53,10 +53,10 @@ jobs:
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
     steps:
+      - checkout
       - attach_workspace:
           at: ~/wp-e2e-tests/workspace
       - run: cat workspace/saved-vars >> $BASH_ENV
-      - run: cd wp-e2e-tests && git checkout origin/try/notify-update
       - run:
           name: Notify webhook of successful build
           command: ./wp-e2e-tests/scripts/notify-webhook.sh success
