@@ -55,6 +55,7 @@ jobs:
     steps:
       - checkout
       - run: git submodule init
+      - run: git submodule update --remote --force
       - attach_workspace:
           at: ~/wp-e2e-tests/workspace
       - run: cat workspace/saved-vars >> $BASH_ENV
