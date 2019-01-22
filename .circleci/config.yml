@@ -38,10 +38,24 @@ jobs:
           name: Notify webhook of failed build
           when: on_fail
           command: ./wp-e2e-tests/scripts/notify-webhook.sh failed
+      - run:
+          name: Save build information
+          command: |
+            echo "export SAVED_BUILD_URL=$CIRCLE_BUILD_URL" >>workspace/saved-vars
+            echo "export SAVED_BUILD_NUM=$CIRCLE_BUILD_NUM" >>workspace/saved-vars
+      - persist_to_workspace:
+          root: workspace
+          paths:
+          - saved-vars
   notify:
+    working_directory: ~/wp-e2e-tests
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
     steps:
+      - attach_workspace:
+          at: ~/wp-e2e-tests/workspace
+      - run: cat workspace/saved-vars >> $BASH_ENV
+      - run: cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master}
       - run:
           name: Notify webhook of successful build
           command: ./wp-e2e-tests/scripts/notify-webhook.sh success
