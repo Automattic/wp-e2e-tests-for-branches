@@ -38,7 +38,18 @@ jobs:
           name: Notify webhook of failed build
           when: on_fail
           command: ./wp-e2e-tests/scripts/notify-webhook.sh failed
+  notify:
+    docker:
+      - image: 'circleci/node:$NODE_VERSION-browsers'
+    steps:
       - run:
           name: Notify webhook of successful build
-          when: on_success
           command: ./wp-e2e-tests/scripts/notify-webhook.sh success
+workflows:
+  version: 2
+  build-and-notify:
+    jobs:
+    - build
+    - notify:
+        requires:
+        - build
