@@ -56,7 +56,6 @@ jobs:
       - attach_workspace:
           at: ~/wp-e2e-tests/workspace
       - run: cat workspace/saved-vars >> $BASH_ENV
-      - run: cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master}
       - run:
           name: Notify webhook of successful build
           command: ./wp-e2e-tests/scripts/notify-webhook.sh success
