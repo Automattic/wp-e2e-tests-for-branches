@@ -41,6 +41,7 @@ jobs:
       - run:
           name: Save build information
           command: |
+            mkdir -p workspace
             echo "export SAVED_BUILD_URL=$CIRCLE_BUILD_URL" >>workspace/saved-vars
             echo "export SAVED_BUILD_NUM=$CIRCLE_BUILD_NUM" >>workspace/saved-vars
       - persist_to_workspace:
