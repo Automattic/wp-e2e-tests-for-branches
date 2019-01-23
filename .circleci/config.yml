@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build:
     parallelism: 2
@@ -63,7 +63,7 @@ jobs:
           name: Notify webhook of successful build
           command: ./wp-e2e-tests/scripts/notify-webhook.sh success
 workflows:
-  version: 2
+  version: 2.1
   build-and-notify:
     jobs:
     - build
