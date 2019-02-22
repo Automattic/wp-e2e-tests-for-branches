@@ -1,12 +1,16 @@
-version: 2
+version: 2.1
 jobs:
-  build:
+  e2e-full-suite:
     working_directory: ~/wp-e2e-tests
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
         environment:
           NODE_ENV: test
           TARGET: BRANCHES
+    parameters:
+      device:
+        type: string
+        default: "desktop"
     steps:
       - checkout
       - run: git submodule init
@@ -26,7 +30,7 @@ jobs:
       - run: cd wp-e2e-tests && npm run decryptconfig
       - run: sudo chmod +x wp-e2e-tests/node_modules/.bin/magellan
       - run: echo running test command "./run.sh -p -R ${testFlag} $RUN_ARGS"
-      - run: cd wp-e2e-tests && ./run.sh -R ${testFlag} $RUN_ARGS
+      - run: cd wp-e2e-tests && ./run.sh -s << parameters.device >> -R ${testFlag} $RUN_ARGS
       - store_test_results:
           path: wp-e2e-tests/reports/
       - store_artifacts:
@@ -41,3 +45,13 @@ jobs:
           name: Notify webhook of successful build
           when: on_success
           command: ./wp-e2e-tests/scripts/notify-webhook.sh success
+workflows:
+  version: 2.1
+  e2e-tests:
+    jobs:
+    - e2e-full-suite:
+        name: e2e-full-suite-desktop
+        device: "desktop"
+    - e2e-full-suite:
+        name: e2e-full-suite-mobile
+        device: "mobile"
