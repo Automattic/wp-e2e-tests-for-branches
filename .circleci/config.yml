@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/wp-e2e-tests
+    working_directory: ~/wp-calypso
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
         environment:
@@ -11,33 +11,33 @@ jobs:
       - checkout
       - run: git submodule init
       - run: git submodule update --remote --force
-      - run: cd wp-e2e-tests && git checkout origin/${E2E_BRANCH-master}
+      - run: cd wp-calypso && git checkout origin/${E2E_BRANCH-master}
       - restore_cache:
           keys:
-            - v1-npmcache-{{ checksum "wp-e2e-tests/.nvmrc" }}-{{ checksum "wp-e2e-tests/package-lock.json" }}
-            - v1-npmcache-{{ checksum "wp-e2e-tests/.nvmrc" }}
+            - v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
+            - v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}
             - v1-npmcache
-      - run: cd wp-e2e-tests && npm ci
+      - run: cd wp-calypso/test/e2e && npm ci
       - save_cache:
-          key: v1-npmcache-{{ checksum "wp-e2e-tests/.nvmrc" }}-{{ checksum "wp-e2e-tests/package-lock.json" }}
+          key: v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
           paths:
             - "~/.npm"
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
-      - run: cd wp-e2e-tests && npm run decryptconfig
-      - run: sudo chmod +x wp-e2e-tests/node_modules/.bin/magellan
+      - run: cd wp-calypso/test/e2e && npm run decryptconfig
+      - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: echo running test command "./run.sh -p -R ${testFlag} $RUN_ARGS"
-      - run: cd wp-e2e-tests && ./run.sh -R ${testFlag} $RUN_ARGS
+      - run: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} $RUN_ARGS
       - store_test_results:
-          path: wp-e2e-tests/reports/
+          path: wp-calypso/test/e2e/reports/
       - store_artifacts:
-          path: wp-e2e-tests/reports/
+          path: wp-calypso/test/e2e/reports/
       - store_artifacts:
-          path: wp-e2e-tests/screenshots/
+          path: wp-calypso/test/e2e/screenshots/
       - run:
           name: Notify webhook of failed build
           when: on_fail
-          command: ./wp-e2e-tests/scripts/notify-webhook.sh failed
+          command: ./wp-calypso/test/e2e/scripts/notify-webhook.sh failed
       - run:
           name: Notify webhook of successful build
           when: on_success
-          command: ./wp-e2e-tests/scripts/notify-webhook.sh success
+          command: ./wp-calypso/test/e2e/scripts/notify-webhook.sh success
