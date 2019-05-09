@@ -24,10 +24,8 @@ jobs:
             - "~/.npm"
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
       - run:
-          name: Update Chrome to latest
-          command: |
-            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&
-            sudo dpkg -i google-chrome-stable_current_amd64.deb
+          name: Update Chromedriver to compatible version
+          command: npm install chromedriver@$CHROMEDRIVER_VERSION
       - run: cd wp-calypso/test/e2e && npm run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: echo running test command "./run.sh -p -R ${testFlag} $RUN_ARGS"
