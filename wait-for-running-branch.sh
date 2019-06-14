@@ -11,8 +11,8 @@ if [ "$sha" != "$calypsoSha" ]; then
 fi
 
 COUNT=0
-RESETCOUNT=60 # 5sec retry = Reset the branch after 5 minutes
-MAXCOUNT=120  # 5sec retry = Cancel after 10 minutes
+RESETCOUNT=120 # 5sec retry = Reset the branch after 10 minutes
+MAXCOUNT=180  # 5sec retry = Cancel after 15 minutes
 SITEWAITCOUNT=30 # 5sec retry = Stop waiting after 2.5 minutes
 
 STATUS=$(curl https://hash-$sha.calypso.live/status 2>/dev/null)
