@@ -17,7 +17,9 @@ jobs:
             - v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
             - v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}
             - v1-npmcache
-      - run: cd wp-calypso/test/e2e && npm ci
+      - run: |
+          cd wp-calypso/test/e2e &&
+          CHROMEDRIVER_VERSION=$(<.chromedriver_version) npm ci
       - save_cache:
           key: v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
           paths:
