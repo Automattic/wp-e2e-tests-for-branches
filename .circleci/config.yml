@@ -7,6 +7,7 @@ jobs:
         environment:
           NODE_ENV: test
           TARGET: BRANCHES
+    parallelism: 4
     steps:
       - checkout
       - run: git submodule init
@@ -27,19 +28,14 @@ jobs:
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
       - run: cd wp-calypso/test/e2e && npm run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
-      - run: echo running test command "./run.sh -p -R ${testFlag} $RUN_ARGS"
-      - run: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} $RUN_ARGS
+      - run: |
+          TESTFILES=$(circleci tests glob "specs*/**/*spec.js" | circleci tests split)
+          echo "[${TESTFILES}]" > testfiles.json
+      - run: echo running test command "./run.sh -p -R ${testFlag} -f testfiles.json $RUN_ARGS"
+      - run: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} -f testfiles.json $RUN_ARGS
       - store_test_results:
           path: wp-calypso/test/e2e/reports/
       - store_artifacts:
           path: wp-calypso/test/e2e/reports/
       - store_artifacts:
           path: wp-calypso/test/e2e/screenshots/
-      - run:
-          name: Notify webhook of failed build
-          when: on_fail
-          command: ./wp-calypso/test/e2e/scripts/notify-webhook.sh failed
-      - run:
-          name: Notify webhook of successful build
-          when: on_success
-          command: ./wp-calypso/test/e2e/scripts/notify-webhook.sh success
