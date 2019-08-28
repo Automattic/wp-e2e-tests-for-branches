@@ -7,7 +7,7 @@ jobs:
         environment:
           NODE_ENV: test
           TARGET: BRANCHES
-    parallelism: 4
+    parallelism: 3
     steps:
       - checkout
       - run: git submodule init
@@ -30,7 +30,7 @@ jobs:
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: |
           cd wp-calypso/test/e2e
-          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split --split-by=timings | tr '\n' ',' )\"" >> $BASH_ENV
+          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split --split-by=filesize | tr '\n' ',' )\"" >> $BASH_ENV
       - run: echo running test command "./run.sh -p -R ${testFlag} -f ${TESTFILES} $RUN_ARGS"
       - run: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} -f ${TESTFILES} $RUN_ARGS
       - store_test_results:
