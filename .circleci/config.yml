@@ -29,10 +29,10 @@ jobs:
       - run: cd wp-calypso/test/e2e && npm run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: |
-          TESTFILES=$(circleci tests glob "specs*/**/*spec.js" | circleci tests split)
-          echo "[${TESTFILES}]" > testfiles.json
-      - run: echo running test command "./run.sh -p -R ${testFlag} -f testfiles.json $RUN_ARGS"
-      - run: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} -f testfiles.json $RUN_ARGS
+          cd wp-calypso/test/e2e
+          TESTFILES="$(circleci tests glob "specs*/**/*spec.js" | circleci tests split | tr '\n' ',' )"
+      - run: echo running test command "./run.sh -p -R ${testFlag} -f ${TESTFILES} $RUN_ARGS"
+      - run: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} -f ${TESTFILES} $RUN_ARGS
       - store_test_results:
           path: wp-calypso/test/e2e/reports/
       - store_artifacts:
