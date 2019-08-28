@@ -39,3 +39,7 @@ jobs:
           path: wp-calypso/test/e2e/reports/
       - store_artifacts:
           path: wp-calypso/test/e2e/screenshots/
+experimental:
+  notify:
+    webhooks:
+      - url: https://a8c-gh-e2e-bridge.go-vip.co/circleciwebhook
