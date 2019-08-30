@@ -12,6 +12,10 @@ STATUS_1=$(eval "${CALL} | ${STATUS_CALL_1}")
 STATUS_2=$(eval "${CALL} | ${STATUS_CALL_2}")
 STATUS_3=$(eval "${CALL} | ${STATUS_CALL_3}")
 
+    echo "Node 1 status: ${STATUS_1}"
+    echo "Node 2 status: ${STATUS_2}"
+    echo "Node 3 status: ${STATUS_3}"
+
 until [[ $STATUS_1 == "\"success\"" || $STATUS_1 == "\"failed\"" ]] && [[ $STATUS_2 == "\"success\"" || $STATUS_2 == "\"failed\"" ]] && [[ $STATUS_3 == "\"success\"" || $STATUS_3 == "\"failed\"" ]] ; do
     echo "Node 1 status: ${STATUS_1}"
     echo "Node 2 status: ${STATUS_2}"
@@ -30,7 +34,7 @@ until [[ $STATUS_1 == "\"success\"" || $STATUS_1 == "\"failed\"" ]] && [[ $STATU
     ((COUNT++))
 done
 
-if [[ STATUS_1 == "\"failed\"" ]] || [[ STATUS_2 == "\"failed\"" ]] || [[ STATUS_3 == "\"failed\"" ]]; then
+if [[ $STATUS_1 == "\"failed\"" ]] || [[ $STATUS_2 == "\"failed\"" ]] || [[ $STATUS_3 == "\"failed\"" ]]; then
     echo "Calling endpoint with failed status"
     ./wp-calypso/test/e2e/scripts/notify-webhook.sh failed
 else
