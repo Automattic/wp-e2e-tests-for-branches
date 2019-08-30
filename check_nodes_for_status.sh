@@ -8,9 +8,9 @@ STATUS_CALL_1="jq '.steps[] | select(.name==\"Run Tests\") | .actions[] | select
 STATUS_CALL_2="jq '.steps[] | select(.name==\"Run Tests\") | .actions[] | select(.index==1) | .status'"
 STATUS_CALL_3="jq '.steps[] | select(.name==\"Run Tests\") | .actions[] | select(.index==2) | .status'"
 
-STATUS_1=$(eval "\"${CALL}\" | ${STATUS_CALL_1}")
-STATUS_2=$(eval "\"${CALL}\" | ${STATUS_CALL_2}")
-STATUS_3=$(eval "\"${CALL}\" | ${STATUS_CALL_3}")
+STATUS_1=$(eval "${CALL} | ${STATUS_CALL_1}")
+STATUS_2=$(eval "${CALL} | ${STATUS_CALL_2}")
+STATUS_3=$(eval "${CALL} | ${STATUS_CALL_3}")
 
 echo "Node 1 status: ${STATUS_1}"
 echo "Node 2 status: ${STATUS_2}"
