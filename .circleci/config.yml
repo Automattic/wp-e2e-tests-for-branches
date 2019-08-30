@@ -31,13 +31,14 @@ jobs:
       - run: |
           cd wp-calypso/test/e2e
           echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split --split-by=filesize | tr '\n' ',' )\"" >> $BASH_ENV
-          echo "export CIRCLE_SHA1=${calypsoSha}" >> $BASH_ENV
-          echo "export CIRCLE_PULL_REQUEST=https://github.com/Automattic/wp-calypso/pull/${pullRequestNum}" >> $BASH_ENV
-          echo "export CIRCLE_PULL_REQUESTS=https://github.com/Automattic/wp-calypso/pull/${pullRequestNum}" >> $BASH_ENV
-          echo "export CI_PULL_REQUEST=https://github.com/Automattic/wp-calypso/pull/${pullRequestNum}" >> $BASH_ENV
-          echo "export CI_PULL_REQUESTS=https://github.com/Automattic/wp-calypso/pull/${pullRequestNum}" >> $BASH_ENV
       - run: echo running test command "./run.sh -p -R ${testFlag} -f ${TESTFILES} $RUN_ARGS"
-      - run: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} -f ${TESTFILES} $RUN_ARGS
+      - run:
+          name: Run Tests
+          command: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} -f ${TESTFILES} $RUN_ARGS
+      - run:
+          name: Report Status
+          when: alwaysch
+          command: if [ "$CIRCLE_NODE_INDEX" = 0 ]; then ./check_nodes_for_status.sh; fi
       - store_test_results:
           path: wp-calypso/test/e2e/reports/
       - store_artifacts:
