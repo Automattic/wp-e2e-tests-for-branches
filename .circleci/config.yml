@@ -37,7 +37,7 @@ jobs:
           command: cd wp-calypso/test/e2e && ./run.sh -R ${testFlag} -f ${TESTFILES} $RUN_ARGS
       - run:
           name: Report Status
-          when: alwaysch
+          when: always
           command: if [ "$CIRCLE_NODE_INDEX" = 0 ]; then ./check_nodes_for_status.sh; fi
       - store_test_results:
           path: wp-calypso/test/e2e/reports/
