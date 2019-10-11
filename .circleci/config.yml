@@ -10,6 +10,9 @@ parameters:
   calypsoProject:
     type: string
     default: ""
+  jetpackProject:
+    type: string
+    default: ""
   E2E_BRANCH:
     type: string
     default: "master"
@@ -48,10 +51,10 @@ parameters:
     default: ""
   SKIP_DOMAIN_TESTS:
     type: string
-    default: ""
+    default: "false"
   HORIZON_TESTS:
     type: string
-    default: ""
+    default: "false"
 
 references:
   set-e2e-variables: &set-e2e-variables
@@ -74,6 +77,7 @@ references:
       echo 'export JETPACKHOST=<< pipeline.parameters.JETPACKHOST >>' >> $BASH_ENV &&
       echo 'export SKIP_DOMAIN_TESTS=<< pipeline.parameters.SKIP_DOMAIN_TESTS >>' >> $BASH_ENV &&
       echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV
+
 jobs:
   run-tests:
     working_directory: ~/wp-calypso
