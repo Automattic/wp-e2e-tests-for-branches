@@ -1,4 +1,67 @@
-version: 2
+version: 2.1
+
+parameters:
+  LIVEBRANCHES:
+    type: boolean
+    default: false
+  BRANCHNAME:
+    type: string
+    default: ""
+  calypsoProject:
+    type: string
+    default: ""
+  E2E_BRANCH:
+    type: string
+    default: ""
+  pullRequestNum:
+    type: string
+    default: ""
+  prContext:
+    type: string
+    default: ""
+  RUN_ARGS:
+    type: string
+    default: ""
+  calypsoSha:
+    type: string
+    default: ""
+  testFlag:
+    type: string
+    default: ""
+  sha:
+    type: string
+    default: ""
+  DEPLOY_USER:
+    type: string
+    default: ""
+  PROD_REVISION:
+    type: string
+    default: ""
+  TO_DEPLOY_REVISION:
+    type: string
+    default: ""
+  RUN_SPECIFIED:
+    type: string
+    default: ""
+
+references:
+  set-e2e-variables: &set-e2e-variables
+    name: Set e2e environment variables
+    command: |
+      echo 'export LIVEBRANCHES=<< pipeline.parameters.LIVEBRANCHES >>' >> $BASH_ENV &&
+      echo 'export BRANCHNAME=<< pipeline.parameters.BRANCHNAME >>' >> $BASH_ENV &&
+      echo 'export calypsoProject=<< pipeline.parameters.calypsoProject >>' >> $BASH_ENV &&
+      echo 'export E2E_BRANCH=<< pipeline.parameters.E2E_BRANCH >>' >> $BASH_ENV &&
+      echo 'export pullRequestNum=<< pipeline.parameters.pullRequestNum >>' >> $BASH_ENV &&
+      echo 'export prContext=<< pipeline.parameters.prContext >>' >> $BASH_ENV &&
+      echo 'export RUN_ARGS=<< pipeline.parameters.RUN_ARGS >>' >> $BASH_ENV &&
+      echo 'export calypsoSha=<< pipeline.parameters.calypsoSha >>' >> $BASH_ENV &&
+      echo 'export testFlag=<< pipeline.parameters.testFlag >>' >> $BASH_ENV &&
+      echo 'export sha=<< pipeline.parameters.sha >>' >> $BASH_ENV &&
+      echo 'export DEPLOY_USER=<< pipeline.parameters.DEPLOY_USER >>' >> $BASH_ENV &&
+      echo 'export PROD_REVISION=<< pipeline.parameters.PROD_REVISION >>' >> $BASH_ENV &&
+      echo 'export TO_DEPLOY_REVISION=<< pipeline.parameters.TO_DEPLOY_REVISION >>' >> $BASH_ENV &&
+      echo 'export RUN_SPECIFIED=<< pipeline.parameters.RUN_SPECIFIED >>' >> $BASH_ENV
 jobs:
   run-tests:
     working_directory: ~/wp-calypso
@@ -10,6 +73,7 @@ jobs:
     parallelism: 3
     steps:
       - checkout
+      - run: *set-e2e-variables
       - run: git submodule init
       - run: git submodule update --remote --force
       - run: cd wp-calypso && git checkout origin/${E2E_BRANCH-master}
@@ -25,7 +89,6 @@ jobs:
           key: v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
           paths:
             - "~/.npm"
-      - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
       - run: cd wp-calypso/test/e2e && npm run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: |
@@ -51,7 +114,7 @@ jobs:
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
     steps:
-      - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
+      - run: if [ "<< pipeline.parameters.LIVEBRANCHES >>" = true ]; then ./wait-for-running-branch.sh; fi
 
 workflows:
   version: 2
