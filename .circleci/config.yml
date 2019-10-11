@@ -54,9 +54,9 @@ references:
       echo 'export E2E_BRANCH=<< pipeline.parameters.E2E_BRANCH >>' >> $BASH_ENV &&
       echo 'export pullRequestNum=<< pipeline.parameters.pullRequestNum >>' >> $BASH_ENV &&
       echo 'export prContext=<< pipeline.parameters.prContext >>' >> $BASH_ENV &&
-      echo 'export RUN_ARGS=<< pipeline.parameters.RUN_ARGS >>' >> $BASH_ENV &&
+      echo 'export RUN_ARGS="<< pipeline.parameters.RUN_ARGS" >>' >> $BASH_ENV &&
       echo 'export calypsoSha=<< pipeline.parameters.calypsoSha >>' >> $BASH_ENV &&
-      echo 'export testFlag=<< pipeline.parameters.testFlag >>' >> $BASH_ENV &&
+      echo 'export testFlag="<< pipeline.parameters.testFlag" >>' >> $BASH_ENV &&
       echo 'export sha=<< pipeline.parameters.sha >>' >> $BASH_ENV &&
       echo 'export DEPLOY_USER=<< pipeline.parameters.DEPLOY_USER >>' >> $BASH_ENV &&
       echo 'export PROD_REVISION=<< pipeline.parameters.PROD_REVISION >>' >> $BASH_ENV &&
@@ -115,7 +115,8 @@ jobs:
       - image: 'circleci/node:$NODE_VERSION-browsers'
     steps:
       - checkout
-      - run: if [ "<< pipeline.parameters.LIVEBRANCHES >>" = true ]; then ./wait-for-running-branch.sh; fi
+      - run: *set-e2e-variables
+      - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
 
 workflows:
   version: 2
