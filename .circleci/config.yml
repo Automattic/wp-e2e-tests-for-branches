@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  run-tests:
     working_directory: ~/wp-calypso
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
@@ -45,3 +45,19 @@ jobs:
           path: wp-calypso/test/e2e/reports/
       - store_artifacts:
           path: wp-calypso/test/e2e/screenshots/
+
+  wait-calypso-live:
+    working_directory: ~/wp-calypso
+    docker:
+      - image: 'circleci/node:$NODE_VERSION-browsers'
+    steps:
+      - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - wait-calypso-live
+      - run-tests:
+          requires:
+            - wait-calypso-live
