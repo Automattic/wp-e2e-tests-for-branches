@@ -50,11 +50,11 @@ parameters:
     type: string
     default: ""
   SKIP_DOMAIN_TESTS:
-    type: string
-    default: "false"
+    type: boolean
+    default: false
   HORIZON_TESTS:
-    type: string
-    default: "false"
+    type: boolean
+    default: false
 
 references:
   set-e2e-variables: &set-e2e-variables
@@ -63,6 +63,7 @@ references:
       echo 'export LIVEBRANCHES=<< pipeline.parameters.LIVEBRANCHES >>' >> $BASH_ENV &&
       echo 'export BRANCHNAME=<< pipeline.parameters.BRANCHNAME >>' >> $BASH_ENV &&
       echo 'export calypsoProject=<< pipeline.parameters.calypsoProject >>' >> $BASH_ENV &&
+      echo 'export jetpackProject=<< pipeline.parameters.jetpackProject >>' >> $BASH_ENV &&
       echo 'export E2E_BRANCH=<< pipeline.parameters.E2E_BRANCH >>' >> $BASH_ENV &&
       echo 'export pullRequestNum=<< pipeline.parameters.pullRequestNum >>' >> $BASH_ENV &&
       echo 'export prContext=<< pipeline.parameters.prContext >>' >> $BASH_ENV &&
