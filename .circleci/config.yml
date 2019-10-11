@@ -2,8 +2,8 @@ version: 2.1
 
 parameters:
   LIVEBRANCHES:
-    type: boolean
-    default: false
+    type: string
+    default: "false"
   BRANCHNAME:
     type: string
     default: ""
@@ -12,7 +12,7 @@ parameters:
     default: ""
   E2E_BRANCH:
     type: string
-    default: ""
+    default: "master"
   pullRequestNum:
     type: string
     default: ""
