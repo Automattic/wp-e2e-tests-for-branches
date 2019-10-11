@@ -70,7 +70,7 @@ jobs:
         environment:
           NODE_ENV: test
           TARGET: BRANCHES
-    parallelism: 4
+    parallelism: 3
     steps:
       - checkout
       - run: *set-e2e-variables
