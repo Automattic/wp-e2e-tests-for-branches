@@ -114,6 +114,7 @@ jobs:
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
     steps:
+      - checkout
       - run: if [ "<< pipeline.parameters.LIVEBRANCHES >>" = true ]; then ./wait-for-running-branch.sh; fi
 
 workflows:
