@@ -43,6 +43,15 @@ parameters:
   RUN_SPECIFIED:
     type: string
     default: ""
+  JETPACKHOST:
+    type: string
+    default: ""
+  SKIP_DOMAIN_TESTS:
+    type: string
+    default: ""
+  HORIZON_TESTS:
+    type: string
+    default: ""
 
 references:
   set-e2e-variables: &set-e2e-variables
@@ -61,7 +70,10 @@ references:
       echo 'export DEPLOY_USER=<< pipeline.parameters.DEPLOY_USER >>' >> $BASH_ENV &&
       echo 'export PROD_REVISION=<< pipeline.parameters.PROD_REVISION >>' >> $BASH_ENV &&
       echo 'export TO_DEPLOY_REVISION=<< pipeline.parameters.TO_DEPLOY_REVISION >>' >> $BASH_ENV &&
-      echo 'export RUN_SPECIFIED=<< pipeline.parameters.RUN_SPECIFIED >>' >> $BASH_ENV
+      echo 'export RUN_SPECIFIED=<< pipeline.parameters.RUN_SPECIFIED >>' >> $BASH_ENV &&
+      echo 'export JETPACKHOST=<< pipeline.parameters.JETPACKHOST >>' >> $BASH_ENV &&
+      echo 'export SKIP_DOMAIN_TESTS=<< pipeline.parameters.SKIP_DOMAIN_TESTS >>' >> $BASH_ENV &&
+      echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV
 jobs:
   run-tests:
     working_directory: ~/wp-calypso
