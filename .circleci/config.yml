@@ -133,6 +133,8 @@ jobs:
     steps:
       - checkout
       - run: *set-e2e-variables
+      - run: git submodule init
+      - run: git submodule update --remote --force
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
       - run:
           when: on_fail
