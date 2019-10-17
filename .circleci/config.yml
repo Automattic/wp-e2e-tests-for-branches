@@ -134,6 +134,10 @@ jobs:
       - checkout
       - run: *set-e2e-variables
       - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
+      - run:
+          when: on_fail
+          command: |
+            ./wp-calypso/test/e2e/scripts/notify-webhook.sh failed
 
 workflows:
   version: 2
