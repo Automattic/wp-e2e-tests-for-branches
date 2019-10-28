@@ -109,6 +109,13 @@ jobs:
       - run: cd wp-calypso/test/e2e && npm run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: |
+          cd wp-calypso
+          if ! git diff --exit-code ${E2E_BRANCH} master --client/signup; then
+              echo "Running Signup Tests"
+          else
+              echo "export SUITE_TAG=\"parallel\"" >> $BASH_ENV
+          fi
+      - run: |
           cd wp-calypso/test/e2e
           echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split --split-by=filesize | tr '\n' ',' )\"" >> $BASH_ENV
       - run: echo running test command "./run.sh -p -R ${testFlag} -f ${TESTFILES} $RUN_ARGS"
