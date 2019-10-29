@@ -110,14 +110,15 @@ jobs:
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: |
           cd wp-calypso
-          if [! git diff --exit-code ${BRANCHNAME} master -- client/signup] && [! ${LIVEBRANCHES}=true ]; then
+          if (( ! git diff --exit-code ${BRANCHNAME} origin/master -- client/signup) && (! ${LIVEBRANCHES}==true ); then
               echo "Running Signup Tests"
+              echo "export SPLIT_BY=\"--split-by=filesize \"" >> $BASH_ENV
           else
               echo "export SUITE_TAG=\"parallel\"" >> $BASH_ENV
           fi
       - run: |
           cd wp-calypso/test/e2e
-          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split --split-by=filesize | tr '\n' ',' )\"" >> $BASH_ENV
+          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split ${SPLIT_BY}| tr '\n' ',' )\"" >> $BASH_ENV
       - run: echo running test command "./run.sh -p -R ${testFlag} -f ${TESTFILES} $RUN_ARGS"
       - run:
           name: Run Tests
