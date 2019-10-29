@@ -110,11 +110,11 @@ jobs:
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: |
           cd wp-calypso
-          if (( ! git diff --exit-code .. origin/master -- client/signup) && ( ${LIVEBRANCHES} )); then
-              echo "export SUITE_TAG=\"parallel\"" >> $BASH_ENV
-          else
+          if (( ! git diff --exit-code .. origin/master -- client/signup) || ( ! ${LIVEBRANCHES} )); then
               echo "Running Signup Tests"
               echo "export SPLIT_BY=\"--split-by=filesize \"" >> $BASH_ENV
+          else
+              echo "export SUITE_TAG=\"parallel\"" >> $BASH_ENV
           fi
       - run: |
           cd wp-calypso/test/e2e
