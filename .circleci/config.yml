@@ -135,7 +135,7 @@ jobs:
       - run: *set-e2e-variables
       - run: git submodule init
       - run: git submodule update --remote --force
-      - run: if [ "$LIVEBRANCHES" = true ]; then ./wait-for-running-branch.sh; fi
+      - run: if [ "$LIVEBRANCHES" = true ]; then ./wp-calypso/test/e2e/scripts/wait-for-running-branch.sh; fi
       - run:
           when: on_fail
           command: |
