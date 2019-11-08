@@ -55,6 +55,9 @@ parameters:
   HORIZON_TESTS:
     type: boolean
     default: false
+  FORCE_ALL:
+    type: boolean
+    default: false
 
 references:
   set-e2e-variables: &set-e2e-variables
@@ -77,7 +80,8 @@ references:
       echo 'export RUN_SPECIFIED=<< pipeline.parameters.RUN_SPECIFIED >>' >> $BASH_ENV &&
       echo 'export JETPACKHOST=<< pipeline.parameters.JETPACKHOST >>' >> $BASH_ENV &&
       echo 'export SKIP_DOMAIN_TESTS=<< pipeline.parameters.SKIP_DOMAIN_TESTS >>' >> $BASH_ENV &&
-      echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV
+      echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV &&
+      echo 'export FORCE_ALL=<< pipeline.parameters.FORCE_ALL >>' >> $BASH_ENV
 
 jobs:
   run-tests:
@@ -110,7 +114,7 @@ jobs:
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run: |
           cd wp-calypso
-          if (( ( ! git diff --exit-code .. origin/master -- client/signup && ! git diff --exit-code .. origin/master -- client/blocks/signup-form && ! git diff --exit-code .. origin/master -- client/lib/signup) || ! ${LIVEBRANCHES} || ${FORCE_ALL} )); then
+          if [[ -n $(git diff --exit-code .. origin/master -- client/signup) || -n $(git diff --exit-code .. origin/master -- client/blocks/signup-form) || -n $(git diff --exit-code .. origin/master -- client/lib/signup) ]] || ! ${LIVEBRANCHES} || ${FORCE_ALL}; then
               echo "Running Signup Tests"
               echo "export SPLIT_BY=\"--split-by=filesize \"" >> $BASH_ENV
           else
