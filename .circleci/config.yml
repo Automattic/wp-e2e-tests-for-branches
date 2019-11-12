@@ -112,7 +112,9 @@ jobs:
             - "~/.npm"
       - run: cd wp-calypso/test/e2e && npm run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
-      - run: |
+      - run:
+          name: Check whether to run all signup tests
+          command: |
           cd wp-calypso
           if [[ -n $(git diff --exit-code .. origin/master -- client/signup) || -n $(git diff --exit-code .. origin/master -- client/blocks/signup-form) || -n $(git diff --exit-code .. origin/master -- client/lib/signup) ]] || ! ${LIVEBRANCHES} || ${FORCE_ALL}; then
               echo "Running All Signup Tests"
