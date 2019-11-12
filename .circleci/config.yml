@@ -55,6 +55,9 @@ parameters:
   HORIZON_TESTS:
     type: boolean
     default: false
+  FORCE_ALL:
+    type: boolean
+    default: false
 
 references:
   set-e2e-variables: &set-e2e-variables
@@ -77,7 +80,8 @@ references:
       echo 'export RUN_SPECIFIED=<< pipeline.parameters.RUN_SPECIFIED >>' >> $BASH_ENV &&
       echo 'export JETPACKHOST=<< pipeline.parameters.JETPACKHOST >>' >> $BASH_ENV &&
       echo 'export SKIP_DOMAIN_TESTS=<< pipeline.parameters.SKIP_DOMAIN_TESTS >>' >> $BASH_ENV &&
-      echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV
+      echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV &&
+      echo 'export FORCE_ALL=<< pipeline.parameters.FORCE_ALL >>' >> $BASH_ENV
 
 jobs:
   run-tests:
@@ -108,9 +112,20 @@ jobs:
             - "~/.npm"
       - run: cd wp-calypso/test/e2e && npm run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
+      - run:
+          name: Check whether to run all signup tests
+          command: |
+            cd wp-calypso
+            if [[ -n $(git diff --exit-code .. origin/master -- client/signup) || -n $(git diff --exit-code .. origin/master -- client/blocks/signup-form) || -n $(git diff --exit-code .. origin/master -- client/lib/signup) ]] || ! ${LIVEBRANCHES} || ${FORCE_ALL}; then
+                echo "Running All Signup Tests"
+                echo "export SPLIT_BY=\"--split-by=filesize \"" >> $BASH_ENV
+            else
+                echo "Running Subset of Signup Tests"
+                echo "export SUITE_TAG=\"parallel\"" >> $BASH_ENV
+            fi
       - run: |
           cd wp-calypso/test/e2e
-          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split --split-by=filesize | tr '\n' ',' )\"" >> $BASH_ENV
+          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split ${SPLIT_BY}| tr '\n' ',' )\"" >> $BASH_ENV
       - run: echo running test command "./run.sh -p -R ${testFlag} -f ${TESTFILES} $RUN_ARGS"
       - run:
           name: Run Tests
