@@ -104,17 +104,18 @@ jobs:
       - run: cd wp-calypso && git checkout origin/${E2E_BRANCH-master}
       - restore_cache:
           keys:
-            - v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
-            - v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}
-            - v1-npmcache
+            - v1-packages-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/yarn.lock" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
+            - v1-packages-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/yarn.lock" }}
+            - v1-packages-{{ checksum "wp-calypso/.nvmrc" }}
+            - v1-packages
       - run: |
           cd wp-calypso/test/e2e &&
-          CHROMEDRIVER_VERSION=$(<.chromedriver_version) npm ci
+          CHROMEDRIVER_VERSION=$(<.chromedriver_version) yarn --frozen-lockfile
       - save_cache:
-          key: v1-npmcache-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
+          key: v1-packages-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/yarn.lock" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
           paths:
-            - "~/.npm"
-      - run: cd wp-calypso/test/e2e && npm run decryptconfig
+            - "~/.cache/yarn"
+      - run: cd wp-calypso/test/e2e && yarn run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run:
           name: Check whether to run all signup tests
