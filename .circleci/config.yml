@@ -90,6 +90,9 @@ references:
 jobs:
   run-tests:
     working_directory: ~/wp-calypso
+    environment:
+      DETECT_CHROMEDRIVER_VERSION: 'false'
+      CHROMEDRIVER_FILEPATH: /usr/local/bin/chromedriver
     docker:
       - image: 'circleci/node:$NODE_VERSION-browsers'
         environment:
@@ -109,12 +112,14 @@ jobs:
             - v1-packages-{{ checksum "wp-calypso/.nvmrc" }}
             - v1-packages
       - run: |
-          cd wp-calypso/test/e2e &&
-          CHROMEDRIVER_VERSION=$(<.chromedriver_version) yarn --frozen-lockfile
+          cd wp-calypso/test/e2e && yarn --frozen-lockfile
       - save_cache:
           key: v1-packages-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/yarn.lock" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
           paths:
             - "~/.cache/yarn"
+      - run: |
+          google-chrome --version > wp-calypso/test/e2e/.chromedriver_version
+          echo -n "Google Chrome version: " && cat wp-calypso/test/e2e/.chromedriver_version
       - run: cd wp-calypso/test/e2e && yarn run decryptconfig
       - run: sudo chmod +x wp-calypso/test/e2e/node_modules/.bin/magellan
       - run:
