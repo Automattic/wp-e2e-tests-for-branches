@@ -82,7 +82,8 @@ references:
       echo 'export TO_DEPLOY_REVISION=<< pipeline.parameters.TO_DEPLOY_REVISION >>' >> $BASH_ENV &&
       echo 'export RUN_SPECIFIED=<< pipeline.parameters.RUN_SPECIFIED >>' >> $BASH_ENV &&
       echo 'export JETPACKHOST=<< pipeline.parameters.JETPACKHOST >>' >> $BASH_ENV &&
-      echo 'export SKIP_DOMAIN_TESTS=$(( -v SKIP_DOMAIN_TESTS ? $SKIP_DOMAIN_TESTS : << pipeline.parameters.SKIP_DOMAIN_TESTS >> ))' >> $BASH_ENV &&
+      if [ -v SKIP_DOMAIN_TESTS ]; then DOMAIN_SKIP=$SKIP_DOMAIN_TESTS; else DOMAIN_SKIP=<< pipeline.parameters.SKIP_DOMAIN_TESTS >>; fi &&
+      echo 'export SKIP_DOMAIN_TESTS=$DOMAIN_SKIP' >> $BASH_ENV &&
       echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV &&
       echo 'export FORCE_ALL=<< pipeline.parameters.FORCE_ALL >>' >> $BASH_ENV &&
       echo 'export GUTENBERG_EDGE=<< pipeline.parameters.GUTENBERG_EDGE >>' >> $BASH_ENV
