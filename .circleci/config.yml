@@ -89,6 +89,7 @@ references:
       echo 'export HORIZON_TESTS=<< pipeline.parameters.HORIZON_TESTS >>' >> $BASH_ENV &&
       echo 'export FORCE_ALL=<< pipeline.parameters.FORCE_ALL >>' >> $BASH_ENV &&
       echo 'export GUTENBERG_EDGE=<< pipeline.parameters.GUTENBERG_EDGE >>' >> $BASH_ENV
+      echo 'export COBLOCKS_EDGE=<< pipeline.parameters.COBLOCKS_EDGE >>' >> $BASH_ENV
 
 jobs:
   run-tests:
