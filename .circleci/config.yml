@@ -154,7 +154,7 @@ jobs:
             cd wp-calypso
             if [[ -n $(git diff --exit-code .. origin/master -- client/signup) || -n $(git diff --exit-code .. origin/master -- client/blocks/signup-form) || -n $(git diff --exit-code .. origin/master -- client/lib/signup) ]] || ! ${LIVEBRANCHES} || ${FORCE_ALL}; then
                 echo "Running All Signup Tests"
-                echo "export SPLIT_BY=\"--split-by=filesize \"" >> $BASH_ENV
+                echo "export SPLIT_BY=\"--split-by=timings \"" >> $BASH_ENV
             else
                 echo "Running Subset of Signup Tests"
                 echo "export SUITE_TAG=\"parallel\"" >> $BASH_ENV
