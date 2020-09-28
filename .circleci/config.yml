@@ -91,14 +91,34 @@ references:
       echo 'export GUTENBERG_EDGE=<< pipeline.parameters.GUTENBERG_EDGE >>' >> $BASH_ENV
       echo 'export COBLOCKS_EDGE=<< pipeline.parameters.COBLOCKS_EDGE >>' >> $BASH_ENV
 
+  install-specific-chrome-browser: &install-specific-chrome-browser
+    name: Install Chrome
+    command: |
+      sudo apt-get update
+      cd /tmp
+      wget --no-check-certificate https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb
+      sudo dpkg -i google-chrome-stable_${CHROME_VERSION}_amd64.deb || sudo apt-get -y -f install
+      rm google-chrome-stable_${CHROME_VERSION}_amd64.deb;
+      sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' "/opt/google/chrome/google-chrome"
+      CHROME_VERSION="$(google-chrome --version)"
+      CHROMEDRIVER_RELEASE="$(echo $CHROME_VERSION | sed 's/^Google Chrome //')"
+      CHROMEDRIVER_RELEASE=${CHROMEDRIVER_RELEASE%%.*}
+      CHROMEDRIVER_VERSION=$(curl --silent --show-error --location --fail --retry 4 --retry-delay 5 http://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROMEDRIVER_RELEASE})
+      curl --silent --show-error --location --fail --retry 4 --retry-delay 5 --output /tmp/chromedriver_linux64.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+      cd /tmp && unzip chromedriver_linux64.zip && rm -rf chromedriver_linux64.zip && sudo mv chromedriver /usr/local/bin/chromedriver && sudo chmod +x /usr/local/bin/chromedriver
+      google-chrome --version
+      chromedriver --version
+
+
 jobs:
   run-tests:
     working_directory: ~/wp-calypso
     environment:
       DETECT_CHROMEDRIVER_VERSION: 'false'
       CHROMEDRIVER_FILEPATH: /usr/local/bin/chromedriver
+      CHROME_VERSION: '84.0.4147.135-1'
     docker:
-      - image: 'circleci/node:$NODE_VERSION-browsers'
+      - image: 'cimg/node:$NODE_VERSION'
         environment:
           NODE_ENV: test
           TARGET: BRANCHES
@@ -108,7 +128,9 @@ jobs:
       - run: *set-e2e-variables
       - run: git submodule init
       - run: git submodule update --remote --force
+      - run: *install-specific-chrome-browser
       - run: cd wp-calypso && git checkout origin/${E2E_BRANCH-master}
+      - run: sudo apt-get install -y xvfb
       - restore_cache:
           keys:
             - v1-packages-{{ checksum "wp-calypso/.nvmrc" }}-{{ checksum "wp-calypso/yarn.lock" }}-{{ checksum "wp-calypso/test/e2e/package.json" }}
@@ -158,7 +180,7 @@ jobs:
   wait-calypso-live:
     working_directory: ~/wp-calypso
     docker:
-      - image: 'circleci/node:$NODE_VERSION-browsers'
+      - image: 'cimg/node:$NODE_VERSION'
     steps:
       - checkout
       - run: *set-e2e-variables
