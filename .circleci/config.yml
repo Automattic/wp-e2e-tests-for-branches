@@ -154,14 +154,13 @@ jobs:
             cd wp-calypso
             if [[ -n $(git diff --exit-code .. origin/master -- client/signup) || -n $(git diff --exit-code .. origin/master -- client/blocks/signup-form) || -n $(git diff --exit-code .. origin/master -- client/lib/signup) ]] || ! ${LIVEBRANCHES} || ${FORCE_ALL}; then
                 echo "Running All Signup Tests"
-                echo "export SPLIT_BY=\"--split-by=filesize \"" >> $BASH_ENV
             else
                 echo "Running Subset of Signup Tests"
                 echo "export SUITE_TAG=\"parallel\"" >> $BASH_ENV
             fi
       - run: |
           cd wp-calypso/test/e2e
-          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split ${SPLIT_BY}| tr '\n' ',' )\"" >> $BASH_ENV
+          echo "export TESTFILES=\"$(circleci tests glob "specs*/**/*spec.js" | circleci tests split --split-by=timings| tr '\n' ',' )\"" >> $BASH_ENV
       - run: echo running test command "./run.sh -p -R ${testFlag} -f ${TESTFILES} $RUN_ARGS"
       - run:
           name: Run Tests
