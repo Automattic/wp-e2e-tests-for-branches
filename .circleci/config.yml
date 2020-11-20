@@ -15,7 +15,7 @@ parameters:
     default: ""
   E2E_BRANCH:
     type: string
-    default: "master"
+    default: "trunk"
   pullRequestNum:
     type: string
     default: ""
@@ -109,16 +109,15 @@ references:
       google-chrome --version
       chromedriver --version
 
-
 jobs:
   run-tests:
     working_directory: ~/wp-calypso
     environment:
-      DETECT_CHROMEDRIVER_VERSION: 'false'
+      DETECT_CHROMEDRIVER_VERSION: "false"
       CHROMEDRIVER_FILEPATH: /usr/local/bin/chromedriver
-      CHROME_VERSION: '84.0.4147.135-1'
+      CHROME_VERSION: "84.0.4147.135-1"
     docker:
-      - image: 'cimg/node:$NODE_VERSION'
+      - image: "cimg/node:$NODE_VERSION"
         environment:
           NODE_ENV: test
           TARGET: BRANCHES
@@ -129,7 +128,7 @@ jobs:
       - run: git submodule init
       - run: git submodule update --remote --force
       - run: *install-specific-chrome-browser
-      - run: cd wp-calypso && git checkout origin/${E2E_BRANCH-master}
+      - run: cd wp-calypso && git checkout origin/${E2E_BRANCH-trunk}
       - run: sudo apt-get install -y xvfb
       - restore_cache:
           keys:
@@ -152,7 +151,7 @@ jobs:
           name: Check whether to run all signup tests
           command: |
             cd wp-calypso
-            if [[ -n $(git diff --exit-code .. origin/master -- client/signup) || -n $(git diff --exit-code .. origin/master -- client/blocks/signup-form) || -n $(git diff --exit-code .. origin/master -- client/lib/signup) ]] || ! ${LIVEBRANCHES} || ${FORCE_ALL}; then
+            if [[ -n $(git diff --exit-code .. origin/trunk -- client/signup) || -n $(git diff --exit-code .. origin/trunk -- client/blocks/signup-form) || -n $(git diff --exit-code .. origin/trunk -- client/lib/signup) ]] || ! ${LIVEBRANCHES} || ${FORCE_ALL}; then
                 echo "Running All Signup Tests"
             else
                 echo "Running Subset of Signup Tests"
@@ -179,7 +178,7 @@ jobs:
   wait-calypso-live:
     working_directory: ~/wp-calypso
     docker:
-      - image: 'cimg/node:$NODE_VERSION'
+      - image: "cimg/node:$NODE_VERSION"
     steps:
       - checkout
       - run: *set-e2e-variables

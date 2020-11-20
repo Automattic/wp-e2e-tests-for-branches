@@ -1,3 +1,4 @@
 [submodule "wp-calypso"]
 	path = wp-calypso
+	branch = trunk
 	url = git@github.com:Automattic/wp-calypso.git
