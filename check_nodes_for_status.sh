@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COUNT=0
-MAXCOUNT=60 # 10 sec retry = Reset the branch after 10 minutes
+MAXCOUNT=180 # 10 sec retry = Reset the branch after 30 minutes
 
 CALL="curl https://circleci.com/api/v1.1/project/github/Automattic/wp-e2e-tests-for-branches/${CIRCLE_BUILD_NUM}"
 STATUS_CALL_1="jq '.steps[] | select(.name==\"Run Tests\") | .actions[] | select(.index==0) | .status'"
